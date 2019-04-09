@@ -39,11 +39,8 @@ availble:
 | POST /upload | Upload file(s) via multipart/form-data type request |
 
 ## Sample Client Code
-To understand usage of this service, check out [test.js](../blob/master/test/test.js) written using
-mocha. 
-
-Following sample code using [Request](https://www.npmjs.com/package/request) gives a simple
-demonstration of how to call the file upload service via its API: 
+Following sample code uses [Request](https://www.npmjs.com/package/request) to demonstrate 
+how to call the file upload service via its API: 
 
 ```javascript
 const fs = require('fs'), 
@@ -69,3 +66,5 @@ request.post({
   }
 }); 
 ```
+
+For more detailed use-cases, refer to [test.js](test/test.js) test suite written for mocha.js. 
