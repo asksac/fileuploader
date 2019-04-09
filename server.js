@@ -90,7 +90,7 @@ app.post('/upload', (req, res) => {
 }); 
 
 // setup static file server 
-app.use('/', express.static(path.join(__dirname, 'public'))); 
+app.use('/', express.static(path.resolve(__dirname, 'public'))); 
 
 // default 404 handler 
 app.use(function (req, res, next) {
@@ -100,7 +100,7 @@ app.use(function (req, res, next) {
 /*
 // start http server 
 var server = app.listen(8080, function () {
-  logger.info('service running on port: ' + server.address().port); 
+  logger.info('http service running on port: ' + server.address().port); 
 });
 */
 
@@ -112,7 +112,7 @@ const httpsOptions = {
 };
 
 var server = https.createServer(httpsOptions, app).listen(LISTEN_PORT, () => {
-  logger.info('service running on port: ' + server.address().port); 
+  logger.info('https service running on port: ' + server.address().port); 
 });
 
 // exporting is required for unit testing
