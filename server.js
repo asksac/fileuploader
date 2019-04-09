@@ -57,29 +57,36 @@ const logger = winston.createLogger({
 
 // curl -X GET 'http://localhost:3000/time'
 app.post('/upload', (req, res) => {
-  logger.debug('upload operation called'); 
+  logger.debug('/upload service called'); 
+
   var form = new formidable.IncomingForm(); 
   form.uploadDir = UPLOAD_PATH; 
-  form.maxFileSize = 200 * 1024 * 1024; // 200 mbs
+  form.maxFileSize = 200 * 1024 * 1024; // set limit to 200 mbs
 
   form.parse(req);
 
   form.on('fileBegin', function(name, file) { 
-    // if form data had a filename, then set the name of saved file to match 
-    // incoming filename
+    // if form has a filename, then set name of saved file to match incoming filename
     if (file.name) file.path = path.resolve(form.uploadDir, file.name); 
-    logger.info('File upload begining: ' + file.name + ' -> ' + file.path); 
+
+    let l = {fieldName: name, requestFileName: file.name, savedFilePath: file.path}; 
+    logger.info('File detected in incoming form, begin receiving: ' + JSON.stringify(l)); 
   });
 
   form.on('file', function (name, file){
-    logger.info('Uploaded file: ' + file.name + ' -> ' + file.path); 
+    let l = {fieldName: name, requestFileName: file.name, savedFilePath: file.path, fileSize: file.size}; 
+    logger.info('Incoming file received completely: ' + JSON.stringify(l)); 
   });
 
   form.on('end', function() {
-    logger.info('All files finished uploading');
+    logger.info('Done receiving incoming file(s)'); 
+    return res.status(200).send('success'); 
   });
 
-  return res.status(200).send('Upload successful'); 
+  form.on('error', function(err) {
+    logger.info('Error generated while receiving form data: ' + err); 
+    return res.status(500).send('error (' + err + ')'); 
+  });
 }); 
 
 // setup static file server 
