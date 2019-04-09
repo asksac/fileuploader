@@ -14,6 +14,11 @@ const LISTEN_PORT = 8443;
 
 const app = express();
 
+// ensure uploads directory exists
+if (!fs.existsSync(UPLOAD_PATH)){
+  fs.mkdirSync(UPLOAD_PATH);
+}
+
 /*
 var bodyParser = require('body-parser'); 
 app.use(bodyParser.json());
