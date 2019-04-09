@@ -1,0 +1,29 @@
+{
+  "name": "fileuploader",
+  "version": "1.0.0",
+  "description": "File upload service using Formidable",
+  "main": "server.js",
+  "scripts": {
+    "test": "mocha",
+    "tls_gen": "openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365"
+  },
+  "keywords": [
+    "file",
+    "upload",
+    "formidable"
+  ],
+  "author": "Sachin Hamirwasia",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "formidable": "^1.2.1",
+    "morgan": "^1.9.1",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.0.2",
+    "request": "^2.88.0",
+    "supertest": "^4.0.2"
+  }
+}
