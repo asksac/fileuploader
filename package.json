@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "mocha",
-    "tls_gen": "openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365"
+    "gen-cert": "openssl req -x509 -newkey rsa:4096 -days 365 -passout pass:best_password -keyout key.pem -out cert.pem -subj \"/C=US/ST=Illinois/L=Chicago/O=AskSac.com/CN=localhost\""
   },
   "keywords": [
     "file",
@@ -14,6 +14,10 @@
   ],
   "author": "Sachin Hamirwasia",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/asksac/fileuploader.git"
+  },
   "dependencies": {
     "express": "^4.16.4",
     "formidable": "^1.2.1",
