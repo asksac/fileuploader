@@ -4,7 +4,8 @@ const request = require('request'),
     assert = require('assert'); 
 
 const fs = require('fs'), 
-  path = require('path'); 
+  path = require('path'), 
+  os = require('os'); 
 
 const certFile = path.resolve(__dirname, '../cert.pem'); 
 
@@ -20,7 +21,7 @@ describe('File upload service', () => {
 
   after('close server', () => {
     server.close(); 
-    fs.unlinkSync(path.resolve(__dirname, '../uploads/mocha_test_data.bin')); 
+    //fs.unlinkSync(path.resolve(__dirname, '../uploads/mocha_test_data.bin')); 
   }); 
 
   describe('GET /', () => {
@@ -35,11 +36,11 @@ describe('File upload service', () => {
     });
   }); 
 
-  describe('POST /upload', () => {
+  describe('Upload small data buffer using POST /upload', () => {
     //const sourceDataBuf = createSequentialBytesBuffer(); 
-    const sourceDataBuf = createRandomBytesBuffer(); 
+    const sourceDataBuf = createRandomBytesBuffer(1024); 
 
-    it('uploads file and returns status code 200', (done) => {
+    it('uploads data buffer as file and returns status code 200', (done) => {
       let multiPartFormData = {
         upload_file: {
           value: sourceDataBuf, // data to upload
@@ -67,6 +68,32 @@ describe('File upload service', () => {
       done(); 
     }); 
   }); 
+
+  describe('Upload large data file using POST /upload', () => {
+    const sourceDataBuf = createSequentialBytesBuffer(1024 * 1024 *10); // 10mb data
+    let tmpFileName = path.resolve(os.tmpDir(), 'mocha_test_large_data.bin'); 
+    createFileFromBuffer(tmpFileName, sourceDataBuf); 
+
+    it('uploads file as stream and returns status code 200', (done) => {
+      let multiPartFormData = {
+        upload_file: fs.createReadStream(tmpFileName)
+      }; 
+      request.post({
+        url: baseUrl + '/upload', 
+        formData: multiPartFormData, 
+        agentOptions: { ca: certBuf, rejectUnauthorized: false }
+      }, (error, response, body) => {
+        assert.equal(200, response.statusCode);
+        done();
+      }); 
+    }); 
+
+    it('compares data uploaded with file saved', (done) => {
+      let targetDataBuf = fs.readFileSync(path.resolve(__dirname, '../uploads/mocha_test_large_data.bin')); 
+      assert.ok(sourceDataBuf.equals(targetDataBuf), 'Uploaded/target data does not match source data'); 
+      done(); 
+    }); 
+  }); 
 });
 
 function createSequentialBytesBuffer(len = 500) {
@@ -86,17 +113,19 @@ function createRandomBytesBuffer(len = 500) {
 }
 
 function createFileFromBuffer(filename, buf) {
-  if (!(filename instanceof String)) throw Error('Invalid type for filename parameter (must be String)'); 
-  if (!(buf instanceof Buffer)) throw Error('Invalid type for buf parameter (must be Buffer)'); 
+  if (!(typeof filename == 'string' || filename instanceof String)) 
+    throw Error('Invalid type for filename; expected string, received ' + typeof filename + '.'); 
+  if (!(buf instanceof Buffer)) 
+    throw Error('Invalid type for buf; (expected Buffer, received ' + typeof buf + '.'); 
 
   // open file to write or overwrite
   let fd; 
   try {
     fd = fs.openSync(filename, 'w'); 
     fs.writeFileSync(fd, buf); 
-    console.log('File \'' + fn + '\' written with data'); 
+    console.log('File \'' + filename + '\' written with data'); 
   } catch (err) {
-    console.error('Error writing to file \'' + fn + '\''); 
+    console.error('Error writing to file \'' + filename + '\''); 
     throw err; 
   } finally {
     if (fd !== undefined) fs.closeSync(fd); 
@@ -104,17 +133,18 @@ function createFileFromBuffer(filename, buf) {
 }
 
 function readFileToBuffer(filename) {
-  if (!(filename instanceof String)) throw Error('Invalid type for filename parameter (must be String)'); 
+  if (!(typeof filename == 'string' || filename instanceof String)) 
+    throw Error('Invalid type for filename; expected string, received ' + typeof filename + '.'); 
 
   // open file to read
   let fd; 
   try {
     fd = fs.openSync(filename, 'r'); 
     let buf = fs.readFileSync(fd); // without encoding parameter, this will return a buffer 
-    console.log('Done reading file \'' + fn + '\''); 
+    console.log('Done reading file \'' + filename + '\''); 
     return buf; 
   } catch (err) {
-    console.error('Error reading file \'' + fn + '\''); 
+    console.error('Error reading file \'' + filename + '\''); 
     throw err; 
   } finally {
     if (fd !== undefined) fs.closeSync(fd); 
