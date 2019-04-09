@@ -1,6 +1,6 @@
 # HTTPS File Upload Service
 
-This project contains a REST-ful service to upload files via HTTPS. It uses Node.js and
+This project contains a RESTful service to upload files via HTTPS. It uses Node.js and
 utilizes the following key modules: 
 - [Express.js](https://expressjs.com/)
 - [Formidable](https://www.npmjs.com/package/formidable) 
@@ -32,13 +32,17 @@ saved in `uploads` directory.
 ## Calling Service API
 The service can also be accessed through its REST API interface. The following end-points are
 availble: 
-| Path | Description |
-| --- | --- |
-| GET / | Retrieve the index.html view page |
-| POST /upload | Upload file(s) via multipart/form-data type request |
+Path | Description
+--- | ---
+GET / | Retrieve the index.html view page
+POST /upload | Upload file(s) via multipart/form-data type request
 
 ## Sample Client Code
+To understand usage of this service, check out [test.js](../blob/master/test/test.js) written using
+mocha. 
 
+Following sample code using [Request](https://www.npmjs.com/package/request) gives a simple
+demonstration of how to call the file upload service via its API: 
 
 ```javascript
 const fs = require('fs'), 
