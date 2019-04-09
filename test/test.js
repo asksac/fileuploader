@@ -21,7 +21,6 @@ describe('File upload service', () => {
 
   after('close server', () => {
     server.close(); 
-    //fs.unlinkSync(path.resolve(__dirname, '../uploads/mocha_test_data.bin')); 
   }); 
 
   describe('GET /', () => {
@@ -62,9 +61,9 @@ describe('File upload service', () => {
 
     it('compares data uploaded with file saved', (done) => {
       let targetDataBuf = fs.readFileSync(path.resolve(__dirname, '../uploads/mocha_test_data.bin')); 
-      //sourceDataBuf.writeInt8(100, 0); // tamper the source data after upload
-
       assert.ok(sourceDataBuf.equals(targetDataBuf), 'Uploaded/target data does not match source data'); 
+
+      fs.unlinkSync(path.resolve(__dirname, '../uploads/mocha_test_data.bin')); // delete file
       done(); 
     }); 
   }); 
@@ -91,6 +90,8 @@ describe('File upload service', () => {
     it('compares data uploaded with file saved', (done) => {
       let targetDataBuf = fs.readFileSync(path.resolve(__dirname, '../uploads/mocha_test_large_data.bin')); 
       assert.ok(sourceDataBuf.equals(targetDataBuf), 'Uploaded/target data does not match source data'); 
+
+      fs.unlinkSync(path.resolve(__dirname, '../uploads/mocha_test_large_data.bin')); // delete file
       done(); 
     }); 
   }); 
