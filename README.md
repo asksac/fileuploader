@@ -32,10 +32,11 @@ saved in `uploads` directory.
 ## Calling Service API
 The service can also be accessed through its REST API interface. The following end-points are
 availble: 
-Path | Description
---- | ---
-GET / | Retrieve the index.html view page
-POST /upload | Upload file(s) via multipart/form-data type request
+
+| Path | Description |
+| --- | --- |
+| GET / | Retrieve the index.html view page |
+| POST /upload | Upload file(s) via multipart/form-data type request |
 
 ## Sample Client Code
 To understand usage of this service, check out [test.js](../blob/master/test/test.js) written using
