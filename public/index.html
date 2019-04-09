@@ -1,0 +1,28 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>File Uploader</title>
+  <meta name="description" content="File Uploader">
+  <meta name="author" content="Sachin Hamirwasia">
+  <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+
+  <div id="drop-area">
+    <form class="my-form">
+      <p>Upload multiple files with the file dialog or by dragging and dropping images onto the dashed region</p>
+      <input type="file" id="fileElem" multiple onchange="handleFiles(this.files)">
+      <label class="button" for="fileElem">Select some files</label>
+    </form>
+    <progress id="progress-bar" max=100 value=0></progress>
+    <div id="gallery" /></div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
