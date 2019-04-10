@@ -18,19 +18,29 @@ npm run-script gen-cert
 npm test
 ```
 
-## Launch Service
-To launch the service, make sure the port (8443) is available, then run command: 
-```
-npm start
-```
+## Launching Service
+To launch the service, make sure the port (8443 by default) is available, then run `npm start` or
+`node server.js`. 
+
+## Configuring Startup Options
+The service supports a few configurable options through `process.env`. For example, a custom 
+listen port and upload directory can be specified by launching the service as follows: 
+`PORT=3043 UPLOAD_PATH=/tmp node server.js` 
+
+| Env Variable | Description | Default |
+| --- | --- | --- |
+| PORT | Sets listen port | 8443 |
+| UPLOAD_PATH | Sets directory to save uploaded files to | ./uploads |
+| MAX_FILE_SIZE | Sets maximum file size in bytes | 200 * 1024 * 1024 | 
+| LOG_LEVEL | Sets logging level | info | 
 
 ## Accessing Service from Web Browser
 The service can be accessed from a web-browser. To start, open address: `https://localhost:8443/`
 Then, drag and drop one or multiple files, and those files will be promptly uploaded to server, and 
 saved in `uploads` directory. 
 
-## Calling Service API
-The service can also be accessed through its REST API interface. The following end-points are
+## Calling Service using HTTP/S API
+The service can also be accessed through its RESTful API interface. The following end-points are
 availble: 
 
 | Path | Description |
@@ -39,8 +49,8 @@ availble:
 | POST /upload | Upload file(s) via multipart/form-data type request |
 
 ## Sample Client Code
-Following sample code uses [Request](https://www.npmjs.com/package/request) to demonstrate 
-how to call the file upload service via its API: 
+Following [sample code](sample_client.js) uses [Request](https://www.npmjs.com/package/request)
+module to demonstrate how to call the file upload service through HTTPS: 
 
 ```javascript
 const fs = require('fs'), 
@@ -62,7 +72,7 @@ request.post({
   if (error) { 
     console.error('Upload failed: ', error); 
   } else {
-    console.log('Response: ' + response.statusCode + '/' + body); 
+    console.log('Response: ' + response.statusCode + ' | ' + body); 
   }
 }); 
 ```
