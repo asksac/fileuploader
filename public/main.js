@@ -25,11 +25,11 @@ function preventDefaults (e) {
 }
 
 function highlight(e) {
-  dropArea.classList.add('highlight')
+  dropArea.classList.add('highlight') 
 }
 
 function unhighlight(e) {
-  dropArea.classList.remove('active')
+  dropArea.classList.remove('highlight')
 }
 
 function handleDrop(e) {
@@ -42,7 +42,7 @@ function handleDrop(e) {
 let uploadProgress = []; 
 let progressBar = document.getElementById('progress-bar'); 
 
-function initializeProgress(numFiles) {
+function initializeProgressBar(numFiles) {
   progressBar.value = 0
   uploadProgress = []
 
@@ -51,7 +51,7 @@ function initializeProgress(numFiles) {
   }
 }
 
-function updateProgress(fileNumber, percent) {
+function updateProgressBar(fileNumber, percent) {
   uploadProgress[fileNumber] = percent
   let total = uploadProgress.reduce((tot, curr) => tot + curr, 0) / uploadProgress.length
   console.debug('update', fileNumber, percent, total)
@@ -60,7 +60,8 @@ function updateProgress(fileNumber, percent) {
 
 function handleFiles(files) {
   files = [...files]
-  initializeProgress(files.length)
+  initializeProgressBar(files.length)
+  initiatizeStatusBar()
   files.forEach(uploadFile)
   // files.forEach(previewFile)
 }
@@ -75,6 +76,23 @@ function previewFile(file) {
   }
 }
 
+function initiatizeStatusBar() {
+  let statusBar = document.getElementById('status-bar') 
+  while (statusBar.firstChild) {
+    statusBar.removeChild(statusBar.firstChild)
+  }
+  let list = document.createElement('ul') 
+  list.setAttribute('id', 'status-messages'); 
+  statusBar.appendChild(list)
+}
+
+function updateStatusBar(msg) {
+  let messages = document.getElementById('status-messages') 
+  let line = document.createElement('li') 
+  line.appendChild(document.createTextNode(msg)); 
+  messages.appendChild(line); 
+}
+
 function uploadFile(file, i) {
   var url = '/upload'
   var xhr = new XMLHttpRequest()
@@ -84,15 +102,16 @@ function uploadFile(file, i) {
 
   // Update progress (can be used to show progress indicator)
   xhr.upload.addEventListener("progress", function(e) {
-    updateProgress(i, (e.loaded * 100.0 / e.total) || 100)
+    updateProgressBar(i, (e.loaded * 100.0 / e.total) || 100)
   })
 
   xhr.addEventListener('readystatechange', function(e) {
     if (xhr.readyState == 4 && xhr.status == 200) {
-      updateProgress(i, 100) // <- Add this
+      updateProgressBar(i, 100); 
+      if (xhr.responseText) updateStatusBar(xhr.responseText); 
     }
     else if (xhr.readyState == 4 && xhr.status != 200) {
-      // Error. Inform the user
+      if (xhr.responseText) updateStatusBar(xhr.responseText); 
     }
   })
 

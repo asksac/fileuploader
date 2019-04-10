@@ -27,6 +27,17 @@ p {
 .my-form {
   margin-bottom: 10px;
 }
+#status-bar {
+  margin-top: 10px; 
+  background: #fffdd8;
+}
+#status-messages {
+  padding: 5px; 
+}
+#status-messages li {
+  font-size: 0.8em; 
+  list-style: decimal inside; 
+}
 #gallery {
   margin-top: 10px;
 }
