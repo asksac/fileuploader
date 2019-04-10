@@ -49,7 +49,6 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()]
 });
 
-// curl -X GET 'http://localhost:3000/time'
 app.post('/upload', (req, res) => {
   logger.debug('/upload service called'); 
 
@@ -83,7 +82,7 @@ app.post('/upload', (req, res) => {
   });
 }); 
 
-// setup static file server 
+// setup static files server 
 app.use('/', express.static(path.resolve(__dirname, 'public'))); 
 
 // default 404 handler 
@@ -92,7 +91,7 @@ app.use(function (req, res, next) {
 }); 
 
 /*
-// start http server 
+// start http server - disabled
 var server = app.listen(8080, function () {
   logger.info('http service running on port: ' + server.address().port); 
 });
@@ -109,5 +108,5 @@ var server = https.createServer(httpsOptions, app).listen(LISTEN_PORT, () => {
   logger.info('https service running on port: ' + server.address().port); 
 });
 
-// exporting is required for unit testing
+// server object must be exported to facilitate mocha testing
 module.exports = server; 
