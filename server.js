@@ -34,7 +34,7 @@ app.use(morgan('dev', {
 }));
 
 // setup winston logger for application logging
-const logLevel = process.env.LOG_LEVEL || 'debug';
+const logLevel = process.env.LOG_LEVEL || 'info';
 const logFormat = winston.format; 
 const logger = winston.createLogger({
   level: logLevel,
@@ -78,8 +78,8 @@ app.post('/upload', (req, res) => {
   });
 
   form.on('error', function(err) {
-    logger.info('Error generated while receiving form data: ' + err); 
-    return res.status(500).send('error (' + err + ')'); 
+    logger.error('Error generated while receiving form data: ' + err); 
+    return res.status(500).send('error - ' + err); 
   });
 }); 
 
