@@ -9,8 +9,9 @@ const express = require('express'),
   winston = require('winston'),  
   formidable = require('formidable'); 
 
-const UPLOAD_PATH = path.resolve(__dirname, './uploads'); 
-const LISTEN_PORT = 8443; 
+const UPLOAD_PATH = process.env.UPLOAD_PATH || path.resolve(__dirname, './uploads'); 
+const LISTEN_PORT = process.env.PORT || 8443; 
+const MAX_FILE_SIZE = process.env.MAX_FILE_SIZE || 200 * 1024 * 1024; // default to 200mb
 
 const app = express();
 
@@ -18,12 +19,6 @@ const app = express();
 if (!fs.existsSync(UPLOAD_PATH)){
   fs.mkdirSync(UPLOAD_PATH);
 }
-
-/*
-var bodyParser = require('body-parser'); 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-*/
 
 // setup mogan middleware loggers
 app.use(morgan('dev', {
@@ -37,7 +32,6 @@ app.use(morgan('dev', {
       return res.statusCode >= 400
   }, stream: process.stdout
 }));
-
 
 // setup winston logger for application logging
 const logLevel = process.env.LOG_LEVEL || 'debug';
@@ -61,7 +55,7 @@ app.post('/upload', (req, res) => {
 
   var form = new formidable.IncomingForm(); 
   form.uploadDir = UPLOAD_PATH; 
-  form.maxFileSize = 200 * 1024 * 1024; // set limit to 200 mbs
+  form.maxFileSize = MAX_FILE_SIZE; 
 
   form.parse(req);
 
